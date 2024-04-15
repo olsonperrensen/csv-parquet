@@ -10,6 +10,15 @@ import logging
 logging.basicConfig(filename='conversion_log.txt', level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 install()
 
+def delete_csv_files(folder_path):
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(".csv"):
+                file_path = os.path.join(root, file)
+                ic(f"Deleting file: '{file_path}'")
+                logging.info(f"Deleting file: '{file_path}'")
+                os.remove(file_path)
+
 def convert_to_parquet():
     # Open file dialog to select input folder
     input_folder = filedialog.askdirectory(title="Select input folder")
@@ -53,8 +62,11 @@ def convert_to_parquet():
         ic("All conversions completed successfully.")
         logging.info("All conversions completed successfully.")
 
+        # Delete all CSV files in the input folder and its subdirectories
+        delete_csv_files(input_folder)
+
         # Display success message
-        result_label.config(text="Conversion successful!", fg="#1DB954", font=("Helvetica", 16, "bold"))
+        result_label.config(text="Conversion successful!\nCSV files deleted.", fg="#1DB954", font=("Helvetica", 16, "bold"))
 
 # Create the main window
 root = tk.Tk()
